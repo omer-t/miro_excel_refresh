@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+import psutil
 import win32api
 import win32com.client
 import win32con
@@ -26,11 +27,27 @@ def handle_backup_file(file_path: str):
     if os.path.exists(backup_path):
         os.remove(backup_path)
     if os.path.exists(file_path):
+        win32api.SetFileAttributes(file_path, win32con.FILE_ATTRIBUTE_NORMAL)
         os.rename(file_path, backup_path)
+
+
+def handle_open_processes(process_name):
+    for proc in psutil.process_iter():
+        try:
+            print(proc.name())
+            if proc.name == process_name:
+                proc.kill()
+        except psutil.AccessDenied as e:
+            print(e)
+            pass
+        except psutil.NoSuchProcess as e:
+            print(e)
+            pass
 
 
 def refresh_excel_file():
     local_path = str(Path(__file__).resolve().parents[0])
+    handle_open_processes('EXCEL.EXE')
     xlapp = win32com.client.DispatchEx("Excel.Application")
 
     file_name = 'paid_search.xlsb'
@@ -38,7 +55,7 @@ def refresh_excel_file():
     # source_path = f"{local_path}/excel/{file_name}"
     # output_path = f"{local_path}/excel/{file_name}"
     gdrive_path = get_gdrive_file_stream_path()
-    folder_path = f"{gdrive_path}\\Shared drives\\Performance Marketing Drive\\Reports\\Development"
+    folder_path = f"{gdrive_path}Shared drives\\Performance Marketing Drive\\Reports\\Development"
     source_path = f"{folder_path}\\source\\{file_name}"
     output_path = f"{folder_path}\\output\\{file_name}"
 
@@ -50,7 +67,10 @@ def refresh_excel_file():
     xlapp.DisplayAlerts = False
 
     # Refresh all data connections.
-    wb.RefreshAll()
+    print(f"Refreshing {output_path}")
+    except Exception:
+    wb.Close(True)
+    continue
 
     handle_backup_file(output_path)
 
@@ -60,7 +80,7 @@ def refresh_excel_file():
 
 
 def main():
-    pass
+    refresh_excel_file()
 
 
 if __name__ == "__main__":
