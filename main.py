@@ -55,6 +55,8 @@ def refresh_excel_file():
     handle_backup_file(output_path)
 
     wb.Save()
+    wb.SaveAs(Filename=output_path)
+    print(f"Successfully refreshed {output_path}")
 
 
 def main():
