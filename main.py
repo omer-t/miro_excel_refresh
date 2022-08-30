@@ -68,9 +68,7 @@ def refresh_excel_file():
 
     # Refresh all data connections.
     print(f"Refreshing {output_path}")
-    except Exception:
-    wb.Close(True)
-    continue
+    wb.RefreshAll()
 
     handle_backup_file(output_path)
 
