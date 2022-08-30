@@ -29,8 +29,6 @@ def handle_backup_file(file_path: str):
     if os.path.exists(file_path):
         os.rename(file_path, backup_path)
 
-    os.dupl
-
 
 def handle_open_processes(process_name):
     for proc in psutil.process_iter():
@@ -63,25 +61,28 @@ def refresh_excel_file():
     # Set file attributes to normal (removes read only file attributes)
     win32api.SetFileAttributes(source_path, win32con.FILE_ATTRIBUTE_NORMAL)
 
-    # Open the workbook
-    wb = xlapp.workbooks.open(source_path)
-    xlapp.DisplayAlerts = False
+    try:
+        # Open the workbook
+        wb = xlapp.workbooks.open(source_path)
+        xlapp.DisplayAlerts = False
 
-    # Refresh all data connections.
-    print(f"Refreshing {output_path}")
-    wb.RefreshAll()
+        # Refresh all data connections.
+        print(f"Refreshing {output_path}")
+        wb.RefreshAll()
 
-    wb.Save()
-    handle_backup_file(output_path)
-    wb.SaveAs(Filename=output_path)
-    print(f"Successfully refreshed {output_path}")
+        wb.Save()
+        handle_backup_file(output_path)
+        wb.SaveAs(Filename=output_path)
+        print(f"Successfully refreshed {output_path}")
 
-    # Quit
-    xlapp.Quit()
+        # Quit
+        xlapp.Quit()
+    except Exception as e:
+        print(e)
+        xlapp.Quit()
 
 
 def main():
-    refresh_excel_file()
 
 
 if __name__ == "__main__":

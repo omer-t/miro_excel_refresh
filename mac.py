@@ -61,6 +61,7 @@ def refresh_excel_file():
     # Open the workbook
     wb = xlapp.workbooks.open(source_path)
     xlapp.DisplayAlerts = False
+    xlapp.Visible = True
 
     # Refresh all data connections.
     print(f"Refreshing {output_path}")
