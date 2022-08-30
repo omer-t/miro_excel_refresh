@@ -27,8 +27,9 @@ def handle_backup_file(file_path: str):
     if os.path.exists(backup_path):
         os.remove(backup_path)
     if os.path.exists(file_path):
-        win32api.SetFileAttributes(file_path, win32con.FILE_ATTRIBUTE_NORMAL)
         os.rename(file_path, backup_path)
+
+    os.dupl
 
 
 def handle_open_processes(process_name):
@@ -70,14 +71,8 @@ def refresh_excel_file():
     print(f"Refreshing {output_path}")
     wb.RefreshAll()
 
+    wb.Save()
     handle_backup_file(output_path)
-
-    # wb.Save()
-    try:
-        wb.SaveAs(Filename=output_path)
-    except Exception as e:
-        print(e)
-        pass
     wb.SaveAs(Filename=output_path)
     print(f"Successfully refreshed {output_path}")
 
