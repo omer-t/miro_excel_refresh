@@ -72,9 +72,17 @@ def refresh_excel_file():
 
     handle_backup_file(output_path)
 
-    wb.Save()
+    # wb.Save()
+    try:
+        wb.SaveAs(Filename=output_path)
+    except Exception as e:
+        print(e)
+        pass
     wb.SaveAs(Filename=output_path)
     print(f"Successfully refreshed {output_path}")
+
+    # Quit
+    xlapp.Quit()
 
 
 def main():
